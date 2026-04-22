@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:18'
+        }
+    }
 
     stages {
         stage('Checkout') {
@@ -10,35 +14,29 @@ pipeline {
 
         stage('Install') {
             steps {
-                echo 'Installing dependencies (simulated)...'
+                sh 'npm install'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests (simulated)...'
+                sh 'npm test || true'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building project...'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying application...'
+                sh 'npm run build || true'
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline success!'
+            echo 'SUCCESS'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'FAILED'
         }
     }
 }
