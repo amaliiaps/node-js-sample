@@ -1,32 +1,29 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18'
-        }
-    }
+    agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 git 'https://github.com/amaliiaps/node-js-sample.git'
             }
         }
 
-        stage('Install') {
+        stage('Install & Test in Docker') {
             steps {
-                sh 'npm install'
-            }
-        }
+                sh '''
+                docker run --rm \
+                -v $PWD:/app \
+                -w /app \
+                node:18 \
+                npm install
 
-        stage('Test') {
-            steps {
-                sh 'npm test || true'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'npm run build || true'
+                docker run --rm \
+                -v $PWD:/app \
+                -w /app \
+                node:18 \
+                npm test || true
+                '''
             }
         }
     }
