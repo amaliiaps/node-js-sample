@@ -11,26 +11,32 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'npm install'
+                sh '''
+                docker run --rm -v $PWD:/app -w /app node:18 npm install
+                '''
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test || true'
+                sh '''
+                docker run --rm -v $PWD:/app -w /app node:18 npm test || true
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build || true'
+                sh '''
+                docker run --rm -v $PWD:/app -w /app node:18 npm run build || true
+                '''
             }
         }
     }
 
     post {
         success {
-            echo 'SUCCESS CI OK'
+            echo 'SUCCESS CI PIPELINE'
         }
         failure {
             echo 'FAILED'
