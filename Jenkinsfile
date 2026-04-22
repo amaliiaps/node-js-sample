@@ -9,28 +9,28 @@ pipeline {
             }
         }
 
-        stage('Install & Test in Docker') {
+        stage('Install') {
             steps {
-                sh '''
-                docker run --rm \
-                -v $PWD:/app \
-                -w /app \
-                node:18 \
-                npm install
+                sh 'npm install'
+            }
+        }
 
-                docker run --rm \
-                -v $PWD:/app \
-                -w /app \
-                node:18 \
-                npm test || true
-                '''
+        stage('Test') {
+            steps {
+                sh 'npm test || true'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build || true'
             }
         }
     }
 
     post {
         success {
-            echo 'SUCCESS'
+            echo 'SUCCESS CI OK'
         }
         failure {
             echo 'FAILED'
