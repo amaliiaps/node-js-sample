@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18'
-        }
-    }
+    agent any
 
     stages {
         stage('Checkout') {
@@ -14,13 +10,13 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'npm install'
+                sh 'docker run --rm -v $PWD:/app -w /app node:18 npm install'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test || echo "No test script found"'
+                sh 'docker run --rm -v $PWD:/app -w /app node:18 npm test || echo "No test script found"'
             }
         }
 
